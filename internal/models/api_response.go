@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"reflect"
 
+	"codewithumam-kasir-api/internal/utils"
 	"github.com/google/uuid"
-	"kasir-api/internal/utils"
 )
 
 // Reference: https://google.github.io/styleguide/jsoncstyleguide.xml

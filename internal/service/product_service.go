@@ -1,9 +1,9 @@
 package service
 
 import (
-	"kasir-api/internal/models"
-	"kasir-api/internal/repository"
-	"kasir-api/internal/utils"
+	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/repository"
+	"codewithumam-kasir-api/internal/utils"
 )
 
 // TODO: optional try to implement partial update (PATCH)

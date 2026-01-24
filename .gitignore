@@ -28,5 +28,12 @@ go.work.sum
 .env
 
 # Editor/IDE
+<<<<<<< Updated upstream
 # .idea/
 # .vscode/
+=======
+.idea/
+.vscode/
+
+kasir-api
+>>>>>>> Stashed changes
