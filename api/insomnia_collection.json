@@ -1,0 +1,306 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: kasir-api
+meta:
+  id: wrk_56cd2b96dc494628a75ca9f3719dab7a
+  created: 1769215583159
+  modified: 1769215583159
+  description: ""
+collection:
+  - name: /api/products
+    meta:
+      id: fld_9f8c7891cbd7468eb3ea0fe7acc72831
+      created: 1769215595531
+      modified: 1769215595531
+      sortKey: -1769215595531
+      description: ""
+    children:
+      - url: http://localhost:8080/api/categories
+        name: Fetch Categories
+        meta:
+          id: req_6185a4c59a6243558a247a981d273bfa
+          created: 1769215604578
+          modified: 1769216143117
+          isPrivate: false
+          description: ""
+          sortKey: -1769215604578
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/categories/RzGwupkM6bwEmqStseS68N4ntCub7PeIan9DlfUb0Qdwsy4N
+        name: Fetch Categories by ID
+        meta:
+          id: req_477baa26c2f84152890e6dbed181d3de
+          created: 1769216151265
+          modified: 1769216310075
+          isPrivate: false
+          description: ""
+          sortKey: -1767300482363
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/categories
+        name: Create Category
+        meta:
+          id: req_119b04db9d27407aaa46c20a1f99b439
+          created: 1769216160070
+          modified: 1769216266112
+          isPrivate: false
+          description: ""
+          sortKey: -1769216160070
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Kategori 1",
+            	"description":  "Tes buat kategori"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/categories/RzGwupkM6bwEmqStseS68N4ntCub7PeIan9DlfUb0Qdwsy4N
+        name: Update Category by ID
+        meta:
+          id: req_2f5ff234b5f642848058ecf253b8e018
+          created: 1769216328975
+          modified: 1769216349439
+          isPrivate: false
+          description: ""
+          sortKey: -1769215882324
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Kategori 1",
+            	"description":  "Tes update kategori"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/categories/RzGwupkM6bwEmqStseS68N4ntCub7PeIan9DlfUb0Qdwsy4N
+        name: Delete Category by ID
+        meta:
+          id: req_562addce46e04acab1b8040a3fc5720b
+          created: 1769216377891
+          modified: 1769216409593
+          isPrivate: false
+          description: ""
+          sortKey: -1769215743451
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: /api/categories
+    meta:
+      id: fld_545ee27e0388473ab0983a339c92aae2
+      created: 1769215601967
+      modified: 1769215601967
+      sortKey: -1769215601967
+      description: ""
+    children:
+      - url: http://localhost:8080/api/products
+        name: Fetch Products
+        meta:
+          id: req_114a0ba7ae474233b50157d78bcd508d
+          created: 1769216438137
+          modified: 1769216488305
+          isPrivate: false
+          description: ""
+          sortKey: -1769216438137
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/products/RzGwupkM6cmseT97xd0p3PYcEi0PPsrXStiEAGSjIrvzlt5D
+        name: Fetch Products by ID
+        meta:
+          id: req_bf3e97722b244497a1c4775811336209
+          created: 1769216494772
+          modified: 1769216633281
+          isPrivate: false
+          description: ""
+          sortKey: -1769216299103.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/products
+        name: Create Product
+        meta:
+          id: req_5f0df4e7047f402a8d09b504cd6533f1
+          created: 1769216501190
+          modified: 1769216599807
+          isPrivate: false
+          description: ""
+          sortKey: -1769216438237
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Produk 1",
+            	"price": 20000,
+            	"stocks": 5
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/products/RzGwupkM6cmseT97xd0p3PYcEi0PPsrXStiEAGSjIrvzlt5D
+        name: Update Product by ID
+        meta:
+          id: req_35b0a7a2c7044e39906d5e380303fab4
+          created: 1769216612584
+          modified: 1769216623693
+          isPrivate: false
+          description: ""
+          sortKey: -1769216438187
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Produk 1 (updated)",
+            	"price": 20000,
+            	"stocks": 5
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/api/products/RzGwupkM6cmseT97xd0p3PYcEi0PPsrXStiEAGSjIrvzlt5D
+        name: Delete Product by ID
+        meta:
+          id: req_f5e5cca4a6c34e2fb6f612236940d203
+          created: 1769216648792
+          modified: 1769216653518
+          isPrivate: false
+          description: ""
+          sortKey: -1769216438162
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_21fad13208a2d5e1e1ed7235f1205f5c5ad64fbe
+    created: 1769215583164
+    modified: 1769215583164
+environments:
+  name: Base Environment
+  meta:
+    id: env_21fad13208a2d5e1e1ed7235f1205f5c5ad64fbe
+    created: 1769215583162
+    modified: 1769215583162
+    isPrivate: false
