@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"kasir-api/internal/handler"
-	"kasir-api/internal/models"
-	"kasir-api/internal/repository"
-	"kasir-api/internal/service"
+	"codewithumam-kasir-api/internal/handler"
+	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/repository"
+	"codewithumam-kasir-api/internal/service"
 )
 
 // TODO: try to implement gzip compressions

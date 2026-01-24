@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/service"
 	"encoding/json"
-	"kasir-api/internal/models"
-	"kasir-api/internal/service"
 	"net/http"
 )
 

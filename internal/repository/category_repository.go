@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"codewithumam-kasir-api/internal/models"
 	"fmt"
 	"github.com/google/uuid"
-	"kasir-api/internal/models"
 )
 
 type CategoryRepository interface {
