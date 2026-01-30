@@ -9,6 +9,7 @@ import (
 type CategoryRepository interface {
 	FindCategories() ([]models.CategoryEntity, error)
 	FindCategoryByID(id string) (models.CategoryEntity, error)
+	FindCategoryByName(name string) (models.CategoryEntity, error)
 	InsertCategory(category models.CategoryEntity) (models.CategoryEntity, error)
 	UpdateCategoryByID(id string, category models.CategoryEntity) (models.CategoryEntity, error)
 	DeleteCategoryByID(id string) error
@@ -35,6 +36,15 @@ func (r *CategoryRepositoryInMemoryImpl) FindCategoryByID(id string) (models.Cat
 	}
 	for _, category := range r.categories {
 		if category.ID == parsedID {
+			return category, nil
+		}
+	}
+	return models.CategoryEntity{}, fmt.Errorf("category not found")
+}
+
+func (r *CategoryRepositoryInMemoryImpl) FindCategoryByName(name string) (models.CategoryEntity, error) {
+	for _, category := range r.categories {
+		if category.Name == name {
 			return category, nil
 		}
 	}

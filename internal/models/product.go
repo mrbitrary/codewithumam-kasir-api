@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"codewithumam-kasir-api/internal/utils"
 	"github.com/google/uuid"
 )
@@ -8,17 +10,18 @@ import (
 // TODO: implement the metadata
 // TODO: implement the category relationship
 type ProductEntity struct {
-	// CreatedAt   time.Time
-	// CreatedBy   string
-	// UpdatedAt   time.Time
-	// UpdatedBy   string
-	// DeletedAt   time.Time
-	// Version     int
+	CreatedAt   time.Time
+	CreatedBy   string
+	UpdatedAt   time.Time
+	UpdatedBy   string
+	DeletedAt   time.Time
+	Version     int
 	ID     uuid.UUID //UUIDv7
 	Name   string
 	Price  int64
 	Stocks int
-	// Category    string
+	CategoryID uuid.UUID
+	// CategoryName string
 }
 
 type Product struct {
@@ -26,7 +29,7 @@ type Product struct {
 	Name   string `json:"name"`
 	Price  int64  `json:"price"` //TODO: what is  the best way to represent price?
 	Stocks int    `json:"stocks"`
-	// Category string `json:"category"`
+	Category string `json:"category"` //category_name
 }
 
 func (p *ProductEntity) ToModel() *Product {
@@ -35,8 +38,13 @@ func (p *ProductEntity) ToModel() *Product {
 		Name:   p.Name,
 		Price:  p.Price,
 		Stocks: p.Stocks,
-		// Category:    p.Category,
+		// Category:    p.CategoryName,
 	}
+}
+
+func (p *Product) withCategoryName(categoryName string) *Product {
+	p.Category = categoryName
+	return p
 }
 
 // TODO: add validation
@@ -44,7 +52,7 @@ type CreateProductRequest struct {
 	Name   string `json:"name"`
 	Price  int64  `json:"price"`
 	Stocks int    `json:"stocks"`
-	// Category    string `json:"category"`
+	Category    string `json:"category"`
 }
 
 func (p *CreateProductRequest) ToEntity() *ProductEntity {
@@ -58,8 +66,12 @@ func (p *CreateProductRequest) ToEntity() *ProductEntity {
 		Name:   p.Name,
 		Price:  p.Price,
 		Stocks: p.Stocks,
-		// Category:    p.Category,
 	}
+}
+
+func (p *ProductEntity) withCategoryID(categoryID uuid.UUID) *ProductEntity {
+	p.CategoryID = categoryID
+	return p
 }
 
 // TODO: add validation

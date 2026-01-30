@@ -1,18 +1,20 @@
 package models
 
 import (
+	"time"
+
 	"codewithumam-kasir-api/internal/utils"
 	"github.com/google/uuid"
 )
 
 // TODO: implement the metadata
 type CategoryEntity struct {
-	// CreatedAt   time.Time
-	// CreatedBy	string
-	// UpdatedAt   time.Time
-	// UpdatedBy	string
-	// DeletedAt   time.Time
-	// Version     int
+	CreatedAt   time.Time
+	CreatedBy	string
+	UpdatedAt   time.Time
+	UpdatedBy	string
+	DeletedAt   time.Time
+	Version     int
 	ID          uuid.UUID //UUIDv7
 	Name        string
 	Description string
@@ -48,6 +50,8 @@ func (c *CreateCategoryRequest) ToEntity() *CategoryEntity {
 		ID:          id,
 		Name:        c.Name,
 		Description: c.Description,
+		CreatedBy: "USER",
+		UpdatedBy: "USER",
 	}
 }
 
@@ -61,5 +65,6 @@ func (c *UpdateCategoryRequest) ToEntity() *CategoryEntity {
 	return &CategoryEntity{
 		Name:        c.Name,
 		Description: c.Description,
+		UpdatedBy: "USER",
 	}
 }
