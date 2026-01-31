@@ -61,8 +61,15 @@ func (r *CategoryRepositoryPostgreSQLImpl) FindCategoryByName(name string) (mode
 }
 
 func (r *CategoryRepositoryPostgreSQLImpl) InsertCategory(category model.CategoryEntity) (model.CategoryEntity, error) {
-	var insertedCategory model.CategoryEntity
-	err := r.connPool.QueryRow(context.Background(), "INSERT INTO core.category (id, name, description, created_by, updated_by) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, description, created_by, updated_by, created_at, updated_at, deleted_at, version", category.ID, category.Name, category.Description, category.CreatedBy, category.UpdatedBy).Scan(&insertedCategory.ID, &insertedCategory.Name, &insertedCategory.Description, &insertedCategory.CreatedBy, &insertedCategory.UpdatedBy, &insertedCategory.CreatedAt, &insertedCategory.UpdatedAt, &insertedCategory.DeletedAt, &insertedCategory.Version)
+	_, err := r.connPool.Exec(context.Background(), "INSERT INTO core.category (id, name, description, created_by, updated_by) VALUES ($1, $2, $3, $4, $5)", category.ID, category.Name, category.Description, category.CreatedBy, category.UpdatedBy)
+	if err != nil {
+		fmt.Println(err)
+		return model.CategoryEntity{}, err
+	}
+
+	insertedCategory, err := r.FindCategoryByID(category.ID.String())
+	// somehow this is buggy on Supabase
+	// err := r.connPool.QueryRow(context.Background(), "INSERT INTO core.category (id, name, description, created_by, updated_by) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, description, created_by, updated_by, created_at, updated_at, deleted_at, version", category.ID, category.Name, category.Description, category.CreatedBy, category.UpdatedBy).Scan(&insertedCategory.ID, &insertedCategory.Name, &insertedCategory.Description, &insertedCategory.CreatedBy, &insertedCategory.UpdatedBy, &insertedCategory.CreatedAt, &insertedCategory.UpdatedAt, &insertedCategory.DeletedAt, &insertedCategory.Version)
 	if err != nil {
 		fmt.Println(err)
 		return model.CategoryEntity{}, err
@@ -71,8 +78,15 @@ func (r *CategoryRepositoryPostgreSQLImpl) InsertCategory(category model.Categor
 }
 
 func (r *CategoryRepositoryPostgreSQLImpl) UpdateCategoryByID(id string, category model.CategoryEntity) (model.CategoryEntity, error) {
-	var updatedCategory model.CategoryEntity
-	err := r.connPool.QueryRow(context.Background(), "UPDATE core.category SET name = $1, description = $2, updated_by = $3	 WHERE id = $4 AND version = $5 RETURNING id, name, description, updated_by, created_at, updated_at, deleted_at, version", category.Name, category.Description, category.UpdatedBy, id, category.Version).Scan(&updatedCategory.ID, &updatedCategory.Name, &updatedCategory.Description, &updatedCategory.UpdatedBy, &updatedCategory.CreatedAt, &updatedCategory.UpdatedAt, &updatedCategory.DeletedAt, &updatedCategory.Version)
+	_, err := r.connPool.Exec(context.Background(), "UPDATE core.category SET name = $1, description = $2, updated_by = $3	 WHERE id = $4 AND version = $5", category.Name, category.Description, category.UpdatedBy, id, category.Version)
+	if err != nil {
+		fmt.Println(err)
+		return model.CategoryEntity{}, err
+	}
+	
+	updatedCategory, err := r.FindCategoryByID(id)
+	// somehow this is buggy on Supabase
+	// err := r.connPool.QueryRow(context.Background(), "UPDATE core.category SET name = $1, description = $2, updated_by = $3	 WHERE id = $4 AND version = $5 RETURNING id, name, description, updated_by, created_at, updated_at, deleted_at, version", category.Name, category.Description, category.UpdatedBy, id, category.Version).Scan(&updatedCategory.ID, &updatedCategory.Name, &updatedCategory.Description, &updatedCategory.UpdatedBy, &updatedCategory.CreatedAt, &updatedCategory.UpdatedAt, &updatedCategory.DeletedAt, &updatedCategory.Version)
 	if err != nil {
 		fmt.Println(err)
 		return model.CategoryEntity{}, err

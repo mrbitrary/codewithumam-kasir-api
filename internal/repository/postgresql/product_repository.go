@@ -77,7 +77,6 @@ func (r *ProductRepositoryPostgreSQLImpl) FindProductByID(id string) (model.Prod
 }
 
 func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product model.ProductEntity) (model.ProductEntity, error) {
-	var insertedProduct model.ProductEntity
 	query := `
 		WITH category_lookup AS (
 			SELECT id FROM core.category WHERE lower(name) = lower($5) AND deleted_at IS NULL
@@ -88,20 +87,39 @@ func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product model.ProductEnt
 		) VALUES (
 			$1, $2, $3, $4, 0, 'IDR', (SELECT id FROM category_lookup), $6, $7
 		)
-		RETURNING 
-			id, version, created_at, created_by, updated_at, updated_by,
-			name, stock, price_amount, category_id
 	`
-	err := r.connPool.QueryRow(
-		context.Background(), 
-		query, 
-		product.ID, product.Name, product.Stocks, product.Price, product.CategoryName, 
-		product.CreatedBy, product.UpdatedBy,
-	).Scan(
-		&insertedProduct.ID, &insertedProduct.Version, &insertedProduct.CreatedAt, &insertedProduct.CreatedBy, &insertedProduct.UpdatedAt, &insertedProduct.UpdatedBy,
-		&insertedProduct.Name, &insertedProduct.Stocks, &insertedProduct.Price, &insertedProduct.CategoryID,
-	)
+	_, err := r.connPool.Exec(context.Background(), query, product.ID, product.Name, product.Stocks, product.Price, product.CategoryName, product.CreatedBy, product.UpdatedBy)
+	if err != nil {
+		fmt.Println(err)
+		return model.ProductEntity{}, err
+	}
 	
+	// Supabase buggy when using RETURNING
+	// query := `
+	// 	WITH category_lookup AS (
+	// 		SELECT id FROM core.category WHERE lower(name) = lower($5) AND deleted_at IS NULL
+	// 	)
+	// 	INSERT INTO core.product (
+	// 		id, name, stock, price_amount, price_scale, currency, category_id,
+	// 		created_by, updated_by
+	// 	) VALUES (
+	// 		$1, $2, $3, $4, 0, 'IDR', (SELECT id FROM category_lookup), $6, $7
+	// 	)
+	// 	RETURNING 
+	// 		id, version, created_at, created_by, updated_at, updated_by,
+	// 		name, stock, price_amount, category_id
+	// `
+	// err := r.connPool.QueryRow(
+	// 	context.Background(), 
+	// 	query, 
+	// 	product.ID, product.Name, product.Stocks, product.Price, product.CategoryName, 
+	// 	product.CreatedBy, product.UpdatedBy,
+	// ).Scan(
+	// 	&insertedProduct.ID, &insertedProduct.Version, &insertedProduct.CreatedAt, &insertedProduct.CreatedBy, &insertedProduct.UpdatedAt, &insertedProduct.UpdatedBy,
+	// 	&insertedProduct.Name, &insertedProduct.Stocks, &insertedProduct.Price, &insertedProduct.CategoryID,
+	// )
+
+	insertedProduct, err := r.FindProductByID(product.ID.String())
 	if err != nil {
 		fmt.Println(err)
 		return model.ProductEntity{}, err
@@ -113,7 +131,6 @@ func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product model.ProductEnt
 }
 
 func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product model.ProductEntity) (model.ProductEntity, error) {
-	var updatedProduct model.ProductEntity
 	query := `
 		WITH category_lookup AS (
 			SELECT id FROM core.category WHERE lower(name) = lower($4) AND deleted_at IS NULL
@@ -126,26 +143,46 @@ func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product m
 			category_id = (SELECT id FROM category_lookup),
 			updated_by = $5
 		WHERE id = $6 AND version = $7 AND deleted_at IS NULL
-		RETURNING 
-			id, version, created_at, created_by, updated_at, updated_by, deleted_at,
-			name, stock, price_amount, category_id
 	`
-	
-	err := r.connPool.QueryRow(
-		context.Background(), 
-		query,
-		product.Name, product.Stocks, product.Price, product.CategoryName,
-		product.UpdatedBy, id, product.Version,
-	).Scan(
-		&updatedProduct.ID, &updatedProduct.Version, &updatedProduct.CreatedAt, &updatedProduct.CreatedBy, &updatedProduct.UpdatedAt, &updatedProduct.UpdatedBy, &updatedProduct.DeletedAt,
-		&updatedProduct.Name, &updatedProduct.Stocks, &updatedProduct.Price, &updatedProduct.CategoryID,
-	)
-
+	_, err := r.connPool.Exec(context.Background(), query, product.Name, product.Stocks, product.Price, product.CategoryName, product.UpdatedBy, id, product.Version)
 	if err != nil {
 		fmt.Println(err)
 		return model.ProductEntity{}, err
 	}
+
+	// Supabase buggy when using RETURNING
+	// query := `
+	// 	WITH category_lookup AS (
+	// 		SELECT id FROM core.category WHERE lower(name) = lower($4) AND deleted_at IS NULL
+	// 	)
+	// 	UPDATE core.product 
+	// 	SET 
+	// 		name = $1, 
+	// 		stock = $2,
+	// 		price_amount = $3,
+	// 		category_id = (SELECT id FROM category_lookup),
+	// 		updated_by = $5
+	// 	WHERE id = $6 AND version = $7 AND deleted_at IS NULL
+	// 	RETURNING 
+	// 		id, version, created_at, created_by, updated_at, updated_by, deleted_at,
+	// 		name, stock, price_amount, category_id
+	// `
 	
+	// err := r.connPool.QueryRow(
+	// 	context.Background(), 
+	// 	query,
+	// 	product.Name, product.Stocks, product.Price, product.CategoryName,
+	// 	product.UpdatedBy, id, product.Version,
+	// ).Scan(
+	// 	&updatedProduct.ID, &updatedProduct.Version, &updatedProduct.CreatedAt, &updatedProduct.CreatedBy, &updatedProduct.UpdatedAt, &updatedProduct.UpdatedBy, &updatedProduct.DeletedAt,
+	// 	&updatedProduct.Name, &updatedProduct.Stocks, &updatedProduct.Price, &updatedProduct.CategoryID,
+	// )
+	
+	updatedProduct, err := r.FindProductByID(id)
+	if err != nil {
+		fmt.Println(err)
+		return model.ProductEntity{}, err
+	}
 	updatedProduct.CategoryName = product.CategoryName
 	return updatedProduct, nil
 }
