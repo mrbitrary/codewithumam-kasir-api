@@ -8,7 +8,7 @@ all: build
 
 build:
 	mkdir -p $(BUILD_DIR)
-	go build -o $(BUILD_DIR)/$(BINARY_NAME) $(CMD_PATH)
+	GCO_ENABLED=0 go build -ldflags="-w -s" -o $(BUILD_DIR)/$(BINARY_NAME) $(CMD_PATH)
 
 test:
 	go test -v ./...
