@@ -25,20 +25,26 @@ type ProductEntity struct {
 }
 
 type Product struct {
-	ID       string `json:"id"` //Base62 of UUIDv7
-	Name     string `json:"name"`
-	Price    int64  `json:"price"` //TODO: what is  the best way to represent price?
-	Stocks   int    `json:"stocks"`
-	Category string `json:"category,omitempty"` //category_name
+	ID        string     `json:"id"` //Base62 of UUIDv7
+	Name      string     `json:"name"`
+	Price     int64      `json:"price"` //TODO: what is  the best way to represent price?
+	Stocks    int        `json:"stocks"`
+	Category  string     `json:"category,omitempty"` //category_name
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 }
 
 func (p *ProductEntity) ToModel() *Product {
 	return &Product{
-		ID:       utils.EncodeBase62(p.ID.String()),
-		Name:     p.Name,
-		Price:    p.Price,
-		Stocks:   p.Stocks,
-		Category: p.CategoryName,
+		ID:        utils.EncodeBase62(p.ID.String()),
+		Name:      p.Name,
+		Price:     p.Price,
+		Stocks:    p.Stocks,
+		Category:  p.CategoryName,
+		CreatedAt: p.CreatedAt,
+		UpdatedAt: p.UpdatedAt,
+		DeletedAt: p.DeletedAt,
 	}
 }
 

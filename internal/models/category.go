@@ -21,9 +21,12 @@ type CategoryEntity struct {
 }
 
 type Category struct {
-	ID          string `json:"id"` //Base62 of UUIDv7
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          string     `json:"id"` //Base62 of UUIDv7
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	DeletedAt   *time.Time `json:"deleted_at,omitempty"`
 }
 
 func (c *CategoryEntity) ToModel() *Category {
@@ -31,6 +34,9 @@ func (c *CategoryEntity) ToModel() *Category {
 		ID:          utils.EncodeBase62(c.ID.String()),
 		Name:        c.Name,
 		Description: c.Description,
+		CreatedAt:   c.CreatedAt,
+		UpdatedAt:   c.UpdatedAt,
+		DeletedAt:   c.DeletedAt,
 	}
 }
 
