@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/model"
 )
 
 type ProductRepository interface {
-	FindProducts() ([]models.ProductEntity, error)
-	FindProductByID(id string) (models.ProductEntity, error)
-	InsertProduct(product models.ProductEntity) (models.ProductEntity, error)
-	UpdateProductByID(id string, product models.ProductEntity) (models.ProductEntity, error)
+	FindProducts() ([]model.ProductEntity, error)
+	FindProductByID(id string) (model.ProductEntity, error)
+	InsertProduct(product model.ProductEntity) (model.ProductEntity, error)
+	UpdateProductByID(id string, product model.ProductEntity) (model.ProductEntity, error)
 	DeleteProductByID(id string) error
 }

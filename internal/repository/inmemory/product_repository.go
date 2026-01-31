@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/model"
 	"codewithumam-kasir-api/internal/repository"
 
 	"fmt"
@@ -9,41 +9,41 @@ import (
 )
 
 type ProductRepositoryInMemoryImpl struct {
-	products []models.ProductEntity
+	products []model.ProductEntity
 }
 
 func NewProductRepository() repository.ProductRepository {
 	return &ProductRepositoryInMemoryImpl{
-		products: []models.ProductEntity{},
+		products: []model.ProductEntity{},
 	}
 }
 
-func (r *ProductRepositoryInMemoryImpl) FindProducts() ([]models.ProductEntity, error) {
+func (r *ProductRepositoryInMemoryImpl) FindProducts() ([]model.ProductEntity, error) {
 	return r.products, nil
 }
 
-func (r *ProductRepositoryInMemoryImpl) FindProductByID(id string) (models.ProductEntity, error) {
+func (r *ProductRepositoryInMemoryImpl) FindProductByID(id string) (model.ProductEntity, error) {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return models.ProductEntity{}, fmt.Errorf("product not found")
+		return model.ProductEntity{}, fmt.Errorf("product not found")
 	}
 	for _, p := range r.products {
 		if p.ID == parsedID {
 			return p, nil
 		}
 	}
-	return models.ProductEntity{}, fmt.Errorf("product not found")
+	return model.ProductEntity{}, fmt.Errorf("product not found")
 }
 
-func (r *ProductRepositoryInMemoryImpl) InsertProduct(product models.ProductEntity) (models.ProductEntity, error) {
+func (r *ProductRepositoryInMemoryImpl) InsertProduct(product model.ProductEntity) (model.ProductEntity, error) {
 	r.products = append(r.products, product)
 	return product, nil
 }
 
-func (r *ProductRepositoryInMemoryImpl) UpdateProductByID(id string, product models.ProductEntity) (models.ProductEntity, error) {
+func (r *ProductRepositoryInMemoryImpl) UpdateProductByID(id string, product model.ProductEntity) (model.ProductEntity, error) {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return models.ProductEntity{}, fmt.Errorf("product not found")
+		return model.ProductEntity{}, fmt.Errorf("product not found")
 	}
 	for i, p := range r.products {
 		if p.ID == parsedID {
@@ -52,7 +52,7 @@ func (r *ProductRepositoryInMemoryImpl) UpdateProductByID(id string, product mod
 			return product, nil
 		}
 	}
-	return models.ProductEntity{}, fmt.Errorf("product not found")
+	return model.ProductEntity{}, fmt.Errorf("product not found")
 }
 
 func (r *ProductRepositoryInMemoryImpl) DeleteProductByID(id string) error {

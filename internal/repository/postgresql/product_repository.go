@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/model"
 	"codewithumam-kasir-api/internal/repository"
 	"context"
 	"fmt"
@@ -19,8 +19,8 @@ func NewProductRepository(connPool *pgxpool.Pool) repository.ProductRepository {
 	}
 }
 
-func (r *ProductRepositoryPostgreSQLImpl) FindProducts() ([]models.ProductEntity, error) {
-	var products []models.ProductEntity
+func (r *ProductRepositoryPostgreSQLImpl) FindProducts() ([]model.ProductEntity, error) {
+	var products []model.ProductEntity
 	query := `
 		SELECT 
 			p.id, p.created_at, p.created_by, p.updated_at, p.updated_by,
@@ -38,7 +38,7 @@ func (r *ProductRepositoryPostgreSQLImpl) FindProducts() ([]models.ProductEntity
 	defer rows.Close()
 
 	for rows.Next() {
-		var product models.ProductEntity
+		var product model.ProductEntity
 		if err := rows.Scan(
 			&product.ID, &product.CreatedAt, &product.CreatedBy, &product.UpdatedAt, &product.UpdatedBy,
 			&product.Name, &product.Stocks, &product.Price, &product.CategoryID,
@@ -53,8 +53,8 @@ func (r *ProductRepositoryPostgreSQLImpl) FindProducts() ([]models.ProductEntity
 	return products, nil
 }
 
-func (r *ProductRepositoryPostgreSQLImpl) FindProductByID(id string) (models.ProductEntity, error) {
-	var product models.ProductEntity
+func (r *ProductRepositoryPostgreSQLImpl) FindProductByID(id string) (model.ProductEntity, error) {
+	var product model.ProductEntity
 	query := `
 		SELECT 
 			p.id, p.version, p.created_at, p.created_by, p.updated_at, p.updated_by, p.deleted_at,
@@ -71,13 +71,13 @@ func (r *ProductRepositoryPostgreSQLImpl) FindProductByID(id string) (models.Pro
 	)
 	if err != nil {
 		fmt.Println(err)
-		return models.ProductEntity{}, err
+		return model.ProductEntity{}, err
 	}
 	return product, nil
 }
 
-func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product models.ProductEntity) (models.ProductEntity, error) {
-	var insertedProduct models.ProductEntity
+func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product model.ProductEntity) (model.ProductEntity, error) {
+	var insertedProduct model.ProductEntity
 	query := `
 		WITH category_lookup AS (
 			SELECT id FROM core.category WHERE lower(name) = lower($5) AND deleted_at IS NULL
@@ -104,7 +104,7 @@ func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product models.ProductEn
 	
 	if err != nil {
 		fmt.Println(err)
-		return models.ProductEntity{}, err
+		return model.ProductEntity{}, err
 	}
 	
 	insertedProduct.CategoryName = product.CategoryName 
@@ -112,8 +112,8 @@ func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product models.ProductEn
 	return insertedProduct, nil
 }
 
-func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product models.ProductEntity) (models.ProductEntity, error) {
-	var updatedProduct models.ProductEntity
+func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product model.ProductEntity) (model.ProductEntity, error) {
+	var updatedProduct model.ProductEntity
 	query := `
 		WITH category_lookup AS (
 			SELECT id FROM core.category WHERE lower(name) = lower($4) AND deleted_at IS NULL
@@ -143,7 +143,7 @@ func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product m
 
 	if err != nil {
 		fmt.Println(err)
-		return models.ProductEntity{}, err
+		return model.ProductEntity{}, err
 	}
 	
 	updatedProduct.CategoryName = product.CategoryName

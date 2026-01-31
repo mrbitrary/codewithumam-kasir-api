@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/model"
 	"codewithumam-kasir-api/internal/service"
 	"encoding/json"
 	"net/http"
@@ -24,10 +24,10 @@ func (h *CategoryHandler) FetchCategories(w http.ResponseWriter, r *http.Request
 	categories, err := h.categoryService.FetchCategories()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = json.NewEncoder(w).Encode(models.NewAPIError(http.StatusInternalServerError, "Failed to fetch categories"))
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusInternalServerError, "Failed to fetch categories"))
 		return
 	}
-	_ = json.NewEncoder(w).Encode(models.NewAPIResponseWithItems(categories))
+	_ = json.NewEncoder(w).Encode(model.NewAPIResponseWithItems(categories))
 	w.WriteHeader(http.StatusOK)
 
 }
@@ -39,10 +39,10 @@ func (h *CategoryHandler) FetchCategoryByID(w http.ResponseWriter, r *http.Reque
 	category, err := h.categoryService.FetchCategoryByID(r.PathValue("id"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = json.NewEncoder(w).Encode(models.NewAPIError(http.StatusInternalServerError, "Failed to fetch category"))
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusInternalServerError, "Failed to fetch category"))
 		return
 	}
-	_ = json.NewEncoder(w).Encode(models.NewAPIResponse(category))
+	_ = json.NewEncoder(w).Encode(model.NewAPIResponse(category))
 	w.WriteHeader(http.StatusOK)
 
 }
@@ -51,41 +51,41 @@ func (h *CategoryHandler) FetchCategoryByID(w http.ResponseWriter, r *http.Reque
 // POST /api/categories
 func (h *CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	request := models.CreateCategoryRequest{}
+	request := model.CreateCategoryRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		_ = json.NewEncoder(w).Encode(models.NewAPIError(http.StatusBadRequest, "Invalid request body"))
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusBadRequest, "Invalid request body"))
 		return
 	}
 
 	category, err := h.categoryService.CreateCategory(request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = json.NewEncoder(w).Encode(models.NewAPIError(http.StatusInternalServerError, "Failed to create category"))
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusInternalServerError, "Failed to create category"))
 		return
 	}
-	_ = json.NewEncoder(w).Encode(models.NewAPIResponse(category))
 	w.WriteHeader(http.StatusCreated)
+	_ = json.NewEncoder(w).Encode(model.NewAPIResponse(category))
 }
 
 // TODO: handle properly if invalid request with correct HTTPStatus
 // PUT /api/categories/{id}
 func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	request := models.UpdateCategoryRequest{}
+	request := model.UpdateCategoryRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		_ = json.NewEncoder(w).Encode(models.NewAPIError(http.StatusBadRequest, "Invalid request body"))
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusBadRequest, "Invalid request body"))
 		return
 	}
 	category, err := h.categoryService.UpdateCategoryByID(r.PathValue("id"), request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = json.NewEncoder(w).Encode(models.NewAPIError(http.StatusInternalServerError, "Failed to update category"))
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusInternalServerError, "Failed to update category"))
 		return
 	}
-	_ = json.NewEncoder(w).Encode(models.NewAPIResponse(category))
 	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(model.NewAPIResponse(category))
 }
 
 // TODO: handle properly if invalid request with correct HTTPStatus
@@ -95,7 +95,7 @@ func (h *CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request)
 	err := h.categoryService.DeleteCategoryByID(r.PathValue("id"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = json.NewEncoder(w).Encode(models.NewAPIError(http.StatusInternalServerError, "Failed to delete category"))
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusInternalServerError, "Failed to delete category"))
 		return
 	}
 	w.WriteHeader(http.StatusOK)

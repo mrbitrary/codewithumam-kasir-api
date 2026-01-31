@@ -10,6 +10,9 @@ func EncodeBase62(s string) string {
 
 func DecodeBase62(s string) string {
 	i := new(big.Int)
-	i, _ = i.SetString(s, 62)
+	i, ok := i.SetString(s, 62)
+	if !ok || i == nil {
+		return ""
+	}
 	return string(i.Bytes())
 }

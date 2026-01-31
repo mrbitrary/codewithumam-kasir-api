@@ -14,7 +14,7 @@ import (
 
 	"codewithumam-kasir-api/config"
 	"codewithumam-kasir-api/internal/handler"
-	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/model"
 	pgrepository "codewithumam-kasir-api/internal/repository/postgresql"
 
 	"codewithumam-kasir-api/internal/service"
@@ -71,7 +71,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(models.NewAPIResponse(map[string]any{
+		_ = json.NewEncoder(w).Encode(model.NewAPIResponse(map[string]any{
 			"status":    "OK",
 			"timestamp": time.Now().Format(time.RFC3339),
 		}))
