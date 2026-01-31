@@ -1,21 +1,22 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
-	"strings"
 	"os"
-	"context"
+	"strings"
+	"time"
 
-	"github.com/spf13/viper"	
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/spf13/viper"
 
 	"codewithumam-kasir-api/config"
 	"codewithumam-kasir-api/internal/handler"
 	"codewithumam-kasir-api/internal/models"
-	"codewithumam-kasir-api/internal/repository"
+	pgrepository "codewithumam-kasir-api/internal/repository/postgresql"
+
 	"codewithumam-kasir-api/internal/service"
 )
 
@@ -35,23 +36,23 @@ func main() {
 		_ = viper.ReadInConfig()
 	}
 
-	config := &config.Config {
+	config := &config.Config{
 		Port: viper.GetString("PORT"),
-		Postgres: config.PostgresConfig {
-			Host: viper.GetString("POSTGRES_HOST"),
-			Port: viper.GetString("POSTGRES_PORT"),
-			User: viper.GetString("POSTGRES_USER"),
-			Password: viper.GetString("POSTGRES_PASSWORD"),
-			DBName: viper.GetString("POSTGRES_DB_NAME"),
-			SSLMode: viper.GetString("POSTGRES_SSL_MODE"),
-			MaxConns: viper.GetInt32("POSTGRES_MAX_CONNS"),
+		Postgres: config.PostgresConfig{
+			Host:            viper.GetString("POSTGRES_HOST"),
+			Port:            viper.GetString("POSTGRES_PORT"),
+			User:            viper.GetString("POSTGRES_USER"),
+			Password:        viper.GetString("POSTGRES_PASSWORD"),
+			DBName:          viper.GetString("POSTGRES_DB_NAME"),
+			SSLMode:         viper.GetString("POSTGRES_SSL_MODE"),
+			MaxConns:        viper.GetInt32("POSTGRES_MAX_CONNS"),
 			MaxIdleConnTime: viper.GetDuration("POSTGRES_MAX_IDLE_CONN_TIME"),
-			PingTimeout: viper.GetDuration("POSTGRES_PING_TIMEOUT"),
+			PingTimeout:     viper.GetDuration("POSTGRES_PING_TIMEOUT"),
 		},
 	}
 
 	// postgres://username:password@localhost:5432/database_name?sslmode=require
-	pgConn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",config.Postgres.User, config.Postgres.Password, config.Postgres.Host, config.Postgres.Port, config.Postgres.DBName, config.Postgres.SSLMode)
+	pgConn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", config.Postgres.User, config.Postgres.Password, config.Postgres.Host, config.Postgres.Port, config.Postgres.DBName, config.Postgres.SSLMode)
 	pgxConfig, err := pgxpool.ParseConfig(pgConn)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to parse postgres config: %v\n", err))
@@ -76,7 +77,7 @@ func main() {
 		}))
 	})
 
-	categoryRepository := repository.NewCategoryRepositoryPostgreSQLImpl(db)
+	categoryRepository := pgrepository.NewCategoryRepository(db)
 	categoryService := service.NewCategoryService(categoryRepository)
 	categoryHandler := handler.NewCategoryHandler(categoryService)
 	mux.HandleFunc("GET /api/categories", categoryHandler.FetchCategories)
@@ -85,7 +86,7 @@ func main() {
 	mux.HandleFunc("PUT /api/categories/{id}", categoryHandler.UpdateCategory)
 	mux.HandleFunc("DELETE /api/categories/{id}", categoryHandler.DeleteCategory)
 
-	productRepository := repository.NewProductRepository()
+	productRepository := pgrepository.NewProductRepository(db)
 	productService := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productService)
 	mux.HandleFunc("GET /api/products", productHandler.FetchProducts)

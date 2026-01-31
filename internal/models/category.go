@@ -10,10 +10,10 @@ import (
 // TODO: implement the metadata
 type CategoryEntity struct {
 	CreatedAt   time.Time
-	CreatedBy	string
+	CreatedBy   string
 	UpdatedAt   time.Time
-	UpdatedBy	string
-	DeletedAt   time.Time
+	UpdatedBy   string
+	DeletedAt   *time.Time
 	Version     int
 	ID          uuid.UUID //UUIDv7
 	Name        string
@@ -50,8 +50,8 @@ func (c *CreateCategoryRequest) ToEntity() *CategoryEntity {
 		ID:          id,
 		Name:        c.Name,
 		Description: c.Description,
-		CreatedBy: "USER",
-		UpdatedBy: "USER",
+		CreatedBy:   "USER",
+		UpdatedBy:   "USER",
 	}
 }
 
@@ -65,6 +65,6 @@ func (c *UpdateCategoryRequest) ToEntity() *CategoryEntity {
 	return &CategoryEntity{
 		Name:        c.Name,
 		Description: c.Description,
-		UpdatedBy: "USER",
+		UpdatedBy:   "USER",
 	}
 }
