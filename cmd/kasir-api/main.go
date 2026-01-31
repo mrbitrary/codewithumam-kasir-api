@@ -36,6 +36,12 @@ func main() {
 		_ = viper.ReadInConfig()
 	}
 
+	viper.SetDefault("PORT", "8080")
+	viper.SetDefault("POSTGRES_MAX_IDLE_CONN_TIME", "30s")
+	viper.SetDefault("POSTGRES_PING_TIMEOUT", "5s")
+	viper.SetDefault("POSTGRES_MAX_CONNS", 10)
+	viper.SetDefault("POSTGRES_SSL_MODE", "require")
+
 	config := &config.Config{
 		Port: viper.GetString("PORT"),
 		Postgres: config.PostgresConfig{
@@ -96,7 +102,7 @@ func main() {
 	mux.HandleFunc("DELETE /api/products/{id}", productHandler.DeleteProduct)
 
 	fmt.Println("Server listening on :8080")
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", config.Port), mux); err != nil {
 		panic(err)
 	}
 }
