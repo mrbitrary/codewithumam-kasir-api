@@ -33,6 +33,7 @@ type Product struct {
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	Version   int        `json:"version,omitempty"`
 }
 
 func (p *ProductEntity) ToModel() *Product {
@@ -45,6 +46,7 @@ func (p *ProductEntity) ToModel() *Product {
 		CreatedAt: p.CreatedAt,
 		UpdatedAt: p.UpdatedAt,
 		DeletedAt: p.DeletedAt,
+		Version:   p.Version,
 	}
 }
 
@@ -73,25 +75,22 @@ func (p *CreateProductRequest) ToEntity() *ProductEntity {
 	}
 }
 
-func (p *ProductEntity) withCategoryID(categoryID uuid.UUID) *ProductEntity {
-	p.CategoryID = categoryID
-	return p
-}
-
 // TODO: add validation
 type UpdateProductRequest struct {
-	Name   string `json:"name"`
-	Price  int64  `json:"price"`
-	Stocks int    `json:"stocks"`
-	Category    string `json:"category"`
+	Name     string `json:"name"`
+	Price    int64  `json:"price"`
+	Stocks   int    `json:"stocks"`
+	Category string `json:"category"`
+	Version  int    `json:"version"`
 }
 
 func (p *UpdateProductRequest) ToEntity() *ProductEntity {
 	return &ProductEntity{
-		Name:   p.Name,
-		Price:  p.Price,
-		Stocks: p.Stocks,
+		Name:         p.Name,
+		Price:        p.Price,
+		Stocks:       p.Stocks,
 		CategoryName: p.Category,
-		UpdatedBy:   "USER",
+		Version:      p.Version,
+		UpdatedBy:    "USER",
 	}
 }

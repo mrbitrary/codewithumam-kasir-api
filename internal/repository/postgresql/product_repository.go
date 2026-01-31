@@ -23,7 +23,7 @@ func (r *ProductRepositoryPostgreSQLImpl) FindProducts() ([]models.ProductEntity
 	var products []models.ProductEntity
 	query := `
 		SELECT 
-			p.id, p.version, p.created_at, p.created_by, p.updated_at, p.updated_by,
+			p.id, p.created_at, p.created_by, p.updated_at, p.updated_by,
 			p.name, p.stock, p.price_amount, p.category_id,
 			COALESCE(c.name, '') as category_name
 		FROM core.product p
@@ -40,7 +40,7 @@ func (r *ProductRepositoryPostgreSQLImpl) FindProducts() ([]models.ProductEntity
 	for rows.Next() {
 		var product models.ProductEntity
 		if err := rows.Scan(
-			&product.ID, &product.Version, &product.CreatedAt, &product.CreatedBy, &product.UpdatedAt, &product.UpdatedBy,
+			&product.ID, &product.CreatedAt, &product.CreatedBy, &product.UpdatedAt, &product.UpdatedBy,
 			&product.Name, &product.Stocks, &product.Price, &product.CategoryID,
 			&product.CategoryName,
 		); err != nil {
@@ -125,7 +125,7 @@ func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product m
 			price_amount = $3,
 			category_id = (SELECT id FROM category_lookup),
 			updated_by = $5
-		WHERE id = $6 AND deleted_at IS NULL
+		WHERE id = $6 AND version = $7 AND deleted_at IS NULL
 		RETURNING 
 			id, version, created_at, created_by, updated_at, updated_by, deleted_at,
 			name, stock, price_amount, category_id
@@ -135,7 +135,7 @@ func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product m
 		context.Background(), 
 		query,
 		product.Name, product.Stocks, product.Price, product.CategoryName,
-		product.UpdatedBy, id,
+		product.UpdatedBy, id, product.Version,
 	).Scan(
 		&updatedProduct.ID, &updatedProduct.Version, &updatedProduct.CreatedAt, &updatedProduct.CreatedBy, &updatedProduct.UpdatedAt, &updatedProduct.UpdatedBy, &updatedProduct.DeletedAt,
 		&updatedProduct.Name, &updatedProduct.Stocks, &updatedProduct.Price, &updatedProduct.CategoryID,
