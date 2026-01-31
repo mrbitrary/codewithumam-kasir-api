@@ -45,12 +45,7 @@ func main() {
 	config := &config.Config{
 		Port: viper.GetString("PORT"),
 		Postgres: config.PostgresConfig{
-			Host:            viper.GetString("POSTGRES_HOST"),
-			Port:            viper.GetString("POSTGRES_PORT"),
-			User:            viper.GetString("POSTGRES_USER"),
-			Password:        viper.GetString("POSTGRES_PASSWORD"),
-			DBName:          viper.GetString("POSTGRES_DB_NAME"),
-			SSLMode:         viper.GetString("POSTGRES_SSL_MODE"),
+			ConnString:            viper.GetString("POSTGRES_CONN_STRING"),
 			MaxConns:        viper.GetInt32("POSTGRES_MAX_CONNS"),
 			MaxIdleConnTime: viper.GetDuration("POSTGRES_MAX_IDLE_CONN_TIME"),
 			PingTimeout:     viper.GetDuration("POSTGRES_PING_TIMEOUT"),
@@ -58,8 +53,8 @@ func main() {
 	}
 
 	// postgres://username:password@localhost:5432/database_name?sslmode=require
-	pgConn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", config.Postgres.User, config.Postgres.Password, config.Postgres.Host, config.Postgres.Port, config.Postgres.DBName, config.Postgres.SSLMode)
-	pgxConfig, err := pgxpool.ParseConfig(pgConn)
+	// pgConn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", config.Postgres.User, config.Postgres.Password, config.Postgres.Host, config.Postgres.Port, config.Postgres.DBName, config.Postgres.SSLMode)
+	pgxConfig, err := pgxpool.ParseConfig(config.Postgres.ConnString)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to parse postgres config: %v\n", err))
 	}

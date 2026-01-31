@@ -1,4 +1,7 @@
-CREATE DATABASE kasir_api;
+-- Supabase still using postgres 17.6 as of 2026-01-31
+-- Supabase unable to install extension pg_uuidv7 and pg_partman
+-- Therefore audit_log table is not created
+-- CREATE DATABASE kasir_api;
 ---
 CREATE SCHEMA IF NOT EXISTS core;
 CREATE SCHEMA IF NOT EXISTS audit;
