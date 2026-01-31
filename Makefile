@@ -14,11 +14,11 @@ test:
 	go test -v ./...
 
 coverage:
-	go test -coverprofile=coverage.out ./...
-	go tool cover -func=coverage.out
+	go test -coverprofile=coverage.txt ./...
+	go tool cover -func=coverage.txt
 
 clean:
-	rm -rf $(BUILD_DIR) coverage.out
+	rm -rf $(BUILD_DIR) coverage.txt
 
 lint:
 	golangci-lint run
