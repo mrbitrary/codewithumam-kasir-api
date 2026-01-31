@@ -36,7 +36,6 @@ CREATE TABLE IF NOT EXISTS core.product (
     deleted_at TIMESTAMPTZ,
 
     name TEXT NOT NULL,
-    description TEXT,
     stock INT NOT NULL DEFAULT 0,
     price_amount BIGINT NOT NULL,
     price_scale INT NOT NULL,

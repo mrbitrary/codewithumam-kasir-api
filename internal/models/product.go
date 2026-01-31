@@ -10,49 +10,44 @@ import (
 // TODO: implement the metadata
 // TODO: implement the category relationship
 type ProductEntity struct {
-	CreatedAt   time.Time
-	CreatedBy   string
-	UpdatedAt   time.Time
-	UpdatedBy   string
-	DeletedAt   time.Time
-	Version     int
-	ID     uuid.UUID //UUIDv7
-	Name   string
-	Price  int64
-	Stocks int
-	CategoryID uuid.UUID
-	// CategoryName string
+	CreatedAt  time.Time
+	CreatedBy  string
+	UpdatedAt  time.Time
+	UpdatedBy  string
+	DeletedAt  *time.Time
+	Version    int
+	ID           uuid.UUID //UUIDv7
+	Name         string
+	Price        int64
+	Stocks       int
+	CategoryID   uuid.UUID
+	CategoryName string // JOIN from category table by category_id
 }
 
 type Product struct {
-	ID     string `json:"id"` //Base62 of UUIDv7
-	Name   string `json:"name"`
-	Price  int64  `json:"price"` //TODO: what is  the best way to represent price?
-	Stocks int    `json:"stocks"`
-	Category string `json:"category"` //category_name
+	ID       string `json:"id"` //Base62 of UUIDv7
+	Name     string `json:"name"`
+	Price    int64  `json:"price"` //TODO: what is  the best way to represent price?
+	Stocks   int    `json:"stocks"`
+	Category string `json:"category,omitempty"` //category_name
 }
 
 func (p *ProductEntity) ToModel() *Product {
 	return &Product{
-		ID:     utils.EncodeBase62(p.ID.String()),
-		Name:   p.Name,
-		Price:  p.Price,
-		Stocks: p.Stocks,
-		// Category:    p.CategoryName,
+		ID:       utils.EncodeBase62(p.ID.String()),
+		Name:     p.Name,
+		Price:    p.Price,
+		Stocks:   p.Stocks,
+		Category: p.CategoryName,
 	}
-}
-
-func (p *Product) withCategoryName(categoryName string) *Product {
-	p.Category = categoryName
-	return p
 }
 
 // TODO: add validation
 type CreateProductRequest struct {
-	Name   string `json:"name"`
-	Price  int64  `json:"price"`
-	Stocks int    `json:"stocks"`
-	Category    string `json:"category"`
+	Name     string `json:"name"`
+	Price    int64  `json:"price"`
+	Stocks   int    `json:"stocks"`
+	Category string `json:"category"`
 }
 
 func (p *CreateProductRequest) ToEntity() *ProductEntity {
@@ -62,10 +57,13 @@ func (p *CreateProductRequest) ToEntity() *ProductEntity {
 	}
 
 	return &ProductEntity{
-		ID:     id,
-		Name:   p.Name,
-		Price:  p.Price,
-		Stocks: p.Stocks,
+		ID:           id,
+		Name:         p.Name,
+		Price:        p.Price,
+		Stocks:       p.Stocks,
+		CategoryName: p.Category,
+		CreatedBy:   "USER",
+		UpdatedBy:   "USER",
 	}
 }
 
@@ -79,7 +77,7 @@ type UpdateProductRequest struct {
 	Name   string `json:"name"`
 	Price  int64  `json:"price"`
 	Stocks int    `json:"stocks"`
-	// Category    string `json:"category"`
+	Category    string `json:"category"`
 }
 
 func (p *UpdateProductRequest) ToEntity() *ProductEntity {
@@ -87,6 +85,7 @@ func (p *UpdateProductRequest) ToEntity() *ProductEntity {
 		Name:   p.Name,
 		Price:  p.Price,
 		Stocks: p.Stocks,
-		// Category:    p.Category,
+		CategoryName: p.Category,
+		UpdatedBy:   "USER",
 	}
 }

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"codewithumam-kasir-api/internal/models"
+	"codewithumam-kasir-api/internal/repository"
 	"context"
 	"fmt"
 
@@ -12,7 +13,7 @@ type CategoryRepositoryPostgreSQLImpl struct {
 	connPool *pgxpool.Pool
 }
 
-func NewCategoryRepositoryPostgreSQLImpl(connPool *pgxpool.Pool) CategoryRepository {
+func NewCategoryRepository(connPool *pgxpool.Pool) repository.CategoryRepository {
 	return &CategoryRepositoryPostgreSQLImpl{
 		connPool: connPool,
 	}
@@ -41,7 +42,7 @@ func (r *CategoryRepositoryPostgreSQLImpl) FindCategories() ([]models.CategoryEn
 
 func (r *CategoryRepositoryPostgreSQLImpl) FindCategoryByID(id string) (models.CategoryEntity, error) {
 	var category models.CategoryEntity
-	err := r.connPool.QueryRow(context.Background(), "SELECT id, name, description FROM core.category WHERE id = $1 AND deleted_at IS NULL", id).Scan(&category.ID, &category.Name, &category.Description)
+	err := r.connPool.QueryRow(context.Background(), "SELECT id, name, description FROM core.category WHERE id = $1", id).Scan(&category.ID, &category.Name, &category.Description)
 	if err != nil {
 		fmt.Println(err)
 		return models.CategoryEntity{}, err
