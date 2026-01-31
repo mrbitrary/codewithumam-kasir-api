@@ -27,6 +27,7 @@ type Category struct {
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at,omitempty"`
+	Version     int        `json:"version,omitempty"`
 }
 
 func (c *CategoryEntity) ToModel() *Category {
@@ -37,6 +38,7 @@ func (c *CategoryEntity) ToModel() *Category {
 		CreatedAt:   c.CreatedAt,
 		UpdatedAt:   c.UpdatedAt,
 		DeletedAt:   c.DeletedAt,
+		Version:     c.Version,
 	}
 }
 
@@ -65,12 +67,14 @@ func (c *CreateCategoryRequest) ToEntity() *CategoryEntity {
 type UpdateCategoryRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Version     int    `json:"version"`
 }
 
 func (c *UpdateCategoryRequest) ToEntity() *CategoryEntity {
 	return &CategoryEntity{
 		Name:        c.Name,
 		Description: c.Description,
+		Version:     c.Version,
 		UpdatedBy:   "USER",
 	}
 }
