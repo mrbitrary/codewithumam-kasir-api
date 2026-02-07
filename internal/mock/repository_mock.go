@@ -62,6 +62,14 @@ func (m *MockProductRepository) FindProductByID(id string) (model.ProductEntity,
 	return args.Get(0).(model.ProductEntity), args.Error(1)
 }
 
+func (m *MockProductRepository) FindProductsByNameAndActiveStatus(name string, activeStatus *bool) ([]model.ProductEntity, error) {
+	args := m.Called(name, activeStatus)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]model.ProductEntity), args.Error(1)
+}
+
 func (m *MockProductRepository) InsertProduct(product model.ProductEntity) (model.ProductEntity, error) {
 	args := m.Called(product)
 	return args.Get(0).(model.ProductEntity), args.Error(1)

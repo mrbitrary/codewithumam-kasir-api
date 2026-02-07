@@ -13,7 +13,7 @@ func TestProductEntity_ToModel(t *testing.T) {
 	now := time.Now()
 	id := uuid.New()
 	categoryID := uuid.New()
-	
+
 	entity := &ProductEntity{
 		ID:           id,
 		Name:         "Laptop",
@@ -45,7 +45,7 @@ func TestProductEntity_ToModel_WithDeletedAt(t *testing.T) {
 	now := time.Now()
 	deletedAt := now.Add(time.Hour)
 	id := uuid.New()
-	
+
 	entity := &ProductEntity{
 		ID:        id,
 		Name:      "Discontinued",

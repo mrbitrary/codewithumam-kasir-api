@@ -45,7 +45,7 @@ func main() {
 	config := &config.Config{
 		Port: viper.GetString("PORT"),
 		Postgres: config.PostgresConfig{
-			ConnString:            viper.GetString("POSTGRES_CONN_STRING"),
+			ConnString:      viper.GetString("POSTGRES_CONN_STRING"),
 			MaxConns:        viper.GetInt32("POSTGRES_MAX_CONNS"),
 			MaxIdleConnTime: viper.GetDuration("POSTGRES_MAX_IDLE_CONN_TIME"),
 			PingTimeout:     viper.GetDuration("POSTGRES_PING_TIMEOUT"),

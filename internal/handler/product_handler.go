@@ -17,9 +17,36 @@ func NewProductHandler(productService service.ProductService) *ProductHandler {
 	}
 }
 
-// GET /api/products
+// GET /api/products?name=<name>&active=<activeStatus can be nil 0 1)
 func (h *ProductHandler) FetchProducts(w http.ResponseWriter, r *http.Request) {
-	products, err := h.productService.FetchProducts()
+	name := r.URL.Query().Get("name")
+	activeParam := r.URL.Query().Get("active")
+
+	var activeStatus *bool
+	switch activeParam {
+	case "":
+		activeStatus = nil
+	case "1", "true":
+		b := true
+		activeStatus = &b
+	case "0", "false":
+		b := false
+		activeStatus = &b
+	default:
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusBadRequest, "Invalid active status parameter. Expected: 0, 1, true, false or empty"))
+		return
+	}
+
+	var products []model.Product
+	var err error
+
+	if name != "" || activeStatus != nil {
+		products, err = h.productService.FetchProductsByNameAndActiveStatus(name, activeStatus)
+	} else {
+		products, err = h.productService.FetchProducts()
+	}
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(model.NewAPIError(http.StatusInternalServerError, "Failed to fetch products"))

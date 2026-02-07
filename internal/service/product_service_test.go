@@ -131,3 +131,23 @@ func TestProductServiceDeleteProductByID(t *testing.T) {
 	assert.NoError(t, err)
 	mockRepo.AssertExpectations(t)
 }
+
+func TestProductServiceFetchProductsByNameAndActiveStatus(t *testing.T) {
+	mockRepo := new(mocks.MockProductRepository)
+	service := NewProductService(mockRepo)
+
+	now := time.Now()
+	entities := []model.ProductEntity{
+		{ID: uuid.New(), Name: "Apple iPhone", Price: 1000, Stocks: 5, CategoryName: "Electronics", CreatedAt: now, UpdatedAt: now, Version: 1},
+	}
+
+	active := true
+	mockRepo.On("FindProductsByNameAndActiveStatus", "Apple", &active).Return(entities, nil)
+
+	products, err := service.FetchProductsByNameAndActiveStatus("Apple", &active)
+
+	require.NoError(t, err)
+	assert.Len(t, products, 1)
+	assert.Equal(t, "Apple iPhone", products[0].Name)
+	mockRepo.AssertExpectations(t)
+}

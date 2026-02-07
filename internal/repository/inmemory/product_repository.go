@@ -6,7 +6,10 @@ import (
 
 	"fmt"
 	"github.com/google/uuid"
+	"strings"
 )
+
+const errProductNotFound = "product not found"
 
 type ProductRepositoryInMemoryImpl struct {
 	products []model.ProductEntity
@@ -25,14 +28,32 @@ func (r *ProductRepositoryInMemoryImpl) FindProducts() ([]model.ProductEntity, e
 func (r *ProductRepositoryInMemoryImpl) FindProductByID(id string) (model.ProductEntity, error) {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return model.ProductEntity{}, fmt.Errorf("product not found")
+		return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
 	}
 	for _, p := range r.products {
 		if p.ID == parsedID {
 			return p, nil
 		}
 	}
-	return model.ProductEntity{}, fmt.Errorf("product not found")
+	return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
+}
+
+func (r *ProductRepositoryInMemoryImpl) FindProductsByNameAndActiveStatus(name string, activeStatus *bool) ([]model.ProductEntity, error) {
+	var products []model.ProductEntity
+	for _, p := range r.products {
+		matchName := strings.Contains(strings.ToLower(p.Name), strings.ToLower(name))
+
+		statusMatch := true
+		if activeStatus != nil {
+			isActive := p.DeletedAt == nil
+			statusMatch = (isActive == *activeStatus)
+		}
+
+		if matchName && statusMatch {
+			products = append(products, p)
+		}
+	}
+	return products, nil
 }
 
 func (r *ProductRepositoryInMemoryImpl) InsertProduct(product model.ProductEntity) (model.ProductEntity, error) {
@@ -43,7 +64,7 @@ func (r *ProductRepositoryInMemoryImpl) InsertProduct(product model.ProductEntit
 func (r *ProductRepositoryInMemoryImpl) UpdateProductByID(id string, product model.ProductEntity) (model.ProductEntity, error) {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return model.ProductEntity{}, fmt.Errorf("product not found")
+		return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
 	}
 	for i, p := range r.products {
 		if p.ID == parsedID {
@@ -52,13 +73,13 @@ func (r *ProductRepositoryInMemoryImpl) UpdateProductByID(id string, product mod
 			return product, nil
 		}
 	}
-	return model.ProductEntity{}, fmt.Errorf("product not found")
+	return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
 }
 
 func (r *ProductRepositoryInMemoryImpl) DeleteProductByID(id string) error {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return fmt.Errorf("product not found")
+		return fmt.Errorf(errProductNotFound)
 	}
 	for i, p := range r.products {
 		if p.ID == parsedID {
@@ -66,5 +87,5 @@ func (r *ProductRepositoryInMemoryImpl) DeleteProductByID(id string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("product not found")
+	return fmt.Errorf(errProductNotFound)
 }

@@ -33,12 +33,44 @@ func TestProductHandlerFetchProducts(t *testing.T) {
 	handler.FetchProducts(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	
+
 	var response model.APIResponse
 	err := json.NewDecoder(rec.Body).Decode(&response)
 	require.NoError(t, err)
 	assert.NotNil(t, response.Data)
 	mockService.AssertExpectations(t)
+}
+
+func TestProductHandlerFetchProducts_WithFilters(t *testing.T) {
+	mockService := new(mocks.MockProductService)
+	handler := NewProductHandler(mockService)
+
+	products := []model.Product{
+		{ID: "1", Name: "Laptop", Price: 1000},
+	}
+
+	active := true
+	mockService.On("FetchProductsByNameAndActiveStatus", "Laptop", &active).Return(products, nil)
+
+	req := httptest.NewRequest("GET", "/api/products?name=Laptop&active=1", nil)
+	rec := httptest.NewRecorder()
+
+	handler.FetchProducts(rec, req)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	mockService.AssertExpectations(t)
+}
+
+func TestProductHandlerFetchProducts_InvalidActive(t *testing.T) {
+	mockService := new(mocks.MockProductService)
+	handler := NewProductHandler(mockService)
+
+	req := httptest.NewRequest("GET", "/api/products?active=invalid", nil)
+	rec := httptest.NewRecorder()
+
+	handler.FetchProducts(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
 }
 
 func TestProductHandlerFetchProductsError(t *testing.T) {

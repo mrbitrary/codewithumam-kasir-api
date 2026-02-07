@@ -83,7 +83,7 @@ func (r *CategoryRepositoryPostgreSQLImpl) UpdateCategoryByID(id string, categor
 		fmt.Println(err)
 		return model.CategoryEntity{}, err
 	}
-	
+
 	updatedCategory, err := r.FindCategoryByID(id)
 	// somehow this is buggy on Supabase
 	// err := r.connPool.QueryRow(context.Background(), "UPDATE core.category SET name = $1, description = $2, updated_by = $3	 WHERE id = $4 AND version = $5 RETURNING id, name, description, updated_by, created_at, updated_at, deleted_at, version", category.Name, category.Description, category.UpdatedBy, id, category.Version).Scan(&updatedCategory.ID, &updatedCategory.Name, &updatedCategory.Description, &updatedCategory.UpdatedBy, &updatedCategory.CreatedAt, &updatedCategory.UpdatedAt, &updatedCategory.DeletedAt, &updatedCategory.Version)

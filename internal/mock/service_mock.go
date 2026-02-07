@@ -57,6 +57,14 @@ func (m *MockProductService) FetchProductByID(id string) (model.Product, error) 
 	return args.Get(0).(model.Product), args.Error(1)
 }
 
+func (m *MockProductService) FetchProductsByNameAndActiveStatus(name string, activeStatus *bool) ([]model.Product, error) {
+	args := m.Called(name, activeStatus)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]model.Product), args.Error(1)
+}
+
 func (m *MockProductService) CreateProduct(product model.CreateProductRequest) (model.Product, error) {
 	args := m.Called(product)
 	return args.Get(0).(model.Product), args.Error(1)
