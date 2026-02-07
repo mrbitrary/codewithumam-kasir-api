@@ -7,9 +7,11 @@ import (
 )
 
 // TODO: optional try to implement partial update (PATCH)
-// TODO: implement proper optimistic locking through etag
+// TODO: implement proper optimistic locking through etag or version checks
+// TODO: handle etag properly
 type ProductService interface {
 	FetchProducts() ([]model.Product, error)
+	FetchProductsByNameAndActiveStatus(name string, activeStatus *bool) ([]model.Product, error)
 	FetchProductByID(id string) (model.Product, error)
 	CreateProduct(product model.CreateProductRequest) (model.Product, error)
 	UpdateProductByID(id string, product model.UpdateProductRequest) (model.Product, error)
@@ -28,6 +30,19 @@ func NewProductService(repository repository.ProductRepository) ProductService {
 
 func (s *productService) FetchProducts() ([]model.Product, error) {
 	entities, err := s.repository.FindProducts()
+	if err != nil {
+		return nil, err
+	}
+
+	products := []model.Product{}
+	for _, entity := range entities {
+		products = append(products, *entity.ToModel())
+	}
+	return products, nil
+}
+
+func (s *productService) FetchProductsByNameAndActiveStatus(name string, activeStatus *bool) ([]model.Product, error) {
+	entities, err := s.repository.FindProductsByNameAndActiveStatus(name, activeStatus)
 	if err != nil {
 		return nil, err
 	}

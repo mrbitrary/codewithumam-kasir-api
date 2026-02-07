@@ -47,9 +47,9 @@ func TestDecodeBase62(t *testing.T) {
 	original := "hello"
 	encoded := EncodeBase62(original)
 	decoded := DecodeBase62(encoded)
-	
+
 	assert.Equal(t, original, decoded, "Decode should reverse encode")
-	
+
 	// Test zero
 	assert.Equal(t, "", DecodeBase62("0"))
 }

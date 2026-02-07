@@ -10,7 +10,7 @@ import (
 
 func TestNewAPIResponse(t *testing.T) {
 	data := map[string]string{"key": "value"}
-	
+
 	resp := NewAPIResponse(data)
 
 	require.NotNil(t, resp)
@@ -22,13 +22,13 @@ func TestNewAPIResponse(t *testing.T) {
 
 func TestNewAPIResponseWithItems_WithData(t *testing.T) {
 	items := []string{"item1", "item2"}
-	
+
 	resp := NewAPIResponseWithItems(items)
 
 	require.NotNil(t, resp)
 	assert.NotEmpty(t, resp.ID)
 	assert.NotEmpty(t, resp.Etag)
-	
+
 	dataMap, ok := resp.Data.(map[string]any)
 	require.True(t, ok)
 	assert.Equal(t, items, dataMap["items"])
@@ -36,7 +36,7 @@ func TestNewAPIResponseWithItems_WithData(t *testing.T) {
 
 func TestNewAPIResponseWithItems_EmptySlice(t *testing.T) {
 	items := []string{}
-	
+
 	resp := NewAPIResponseWithItems(items)
 
 	require.NotNil(t, resp)
@@ -70,7 +70,7 @@ func TestNewAPIErrorWithErrors(t *testing.T) {
 		{Message: "Field is required", Reason: ReasonRequired},
 		{Message: "Invalid value", Reason: ReasonInvalidValue},
 	}
-	
+
 	resp := NewAPIErrorWithErrors(400, errors)
 
 	require.NotNil(t, resp)
@@ -93,7 +93,7 @@ func TestErrorDetail_MarshalJSON_AutoPopulateMessage(t *testing.T) {
 	var result map[string]any
 	err = json.Unmarshal(data, &result)
 	require.NoError(t, err)
-	
+
 	assert.Equal(t, "First error", result["message"])
 }
 
@@ -127,7 +127,7 @@ func TestErrorItem_WithReason(t *testing.T) {
 
 func TestGenerateETag_Consistency(t *testing.T) {
 	data := map[string]string{"key": "value"}
-	
+
 	resp1 := NewAPIResponse(data)
 	resp2 := NewAPIResponse(data)
 

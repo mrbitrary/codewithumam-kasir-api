@@ -33,7 +33,7 @@ func TestCategoryHandlerFetchCategories(t *testing.T) {
 	handler.FetchCategories(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	
+
 	var response model.APIResponse
 	err := json.NewDecoder(rec.Body).Decode(&response)
 	require.NoError(t, err)

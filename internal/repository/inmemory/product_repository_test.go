@@ -205,3 +205,44 @@ func TestInMemoryProductRepository_MultipleProducts(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, products, 5)
 }
+
+func TestInMemoryProductRepository_FindProductsByNameAndActiveStatus(t *testing.T) {
+	repo := NewProductRepository()
+
+	id1 := uuid.New()
+	id2 := uuid.New()
+	deletedAt := time.Now()
+
+	products := []model.ProductEntity{
+		{ID: id1, Name: "Apple iPhone", DeletedAt: nil},
+		{ID: id2, Name: "Samsung Galaxy", DeletedAt: &deletedAt},
+	}
+
+	for _, p := range products {
+		_, _ = repo.InsertProduct(p)
+	}
+
+	// Test case: Active only
+	active := true
+	results, err := repo.FindProductsByNameAndActiveStatus("Apple", &active)
+	require.NoError(t, err)
+	assert.Len(t, results, 1)
+	assert.Equal(t, id1, results[0].ID)
+
+	// Test case: Inactive only
+	inactive := false
+	results, err = repo.FindProductsByNameAndActiveStatus("Samsung", &inactive)
+	require.NoError(t, err)
+	assert.Len(t, results, 1)
+	assert.Equal(t, id2, results[0].ID)
+
+	// Test case: All (nil activeStatus)
+	results, err = repo.FindProductsByNameAndActiveStatus("", nil)
+	require.NoError(t, err)
+	assert.Len(t, results, 2)
+
+	// Test case: No results
+	results, err = repo.FindProductsByNameAndActiveStatus("Nokia", nil)
+	require.NoError(t, err)
+	assert.Empty(t, results)
+}

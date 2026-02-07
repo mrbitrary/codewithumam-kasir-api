@@ -51,7 +51,7 @@ func TestErrorDetailMarshalJSONWithMultipleErrors(t *testing.T) {
 	var result map[string]any
 	err = json.Unmarshal(data, &result)
 	require.NoError(t, err)
-	
+
 	// Should use first error message
 	assert.Equal(t, "First error", result["message"])
 }
@@ -68,7 +68,7 @@ func TestErrorDetailMarshalJSONWithNoErrors(t *testing.T) {
 	var result map[string]any
 	err = json.Unmarshal(data, &result)
 	require.NoError(t, err)
-	
+
 	// Should have empty message
 	assert.Equal(t, "", result["message"])
 }

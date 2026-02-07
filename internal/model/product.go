@@ -10,12 +10,12 @@ import (
 // TODO: implement the metadata
 // TODO: implement the category relationship
 type ProductEntity struct {
-	CreatedAt  time.Time
-	CreatedBy  string
-	UpdatedAt  time.Time
-	UpdatedBy  string
-	DeletedAt  *time.Time
-	Version    int
+	CreatedAt    time.Time
+	CreatedBy    string
+	UpdatedAt    time.Time
+	UpdatedBy    string
+	DeletedAt    *time.Time
+	Version      int
 	ID           uuid.UUID //UUIDv7
 	Name         string
 	Price        int64
@@ -70,8 +70,8 @@ func (p *CreateProductRequest) ToEntity() *ProductEntity {
 		Price:        p.Price,
 		Stocks:       p.Stocks,
 		CategoryName: p.Category,
-		CreatedBy:   "USER",
-		UpdatedBy:   "USER",
+		CreatedBy:    "USER",
+		UpdatedBy:    "USER",
 	}
 }
 

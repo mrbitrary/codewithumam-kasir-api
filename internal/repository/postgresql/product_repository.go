@@ -93,7 +93,7 @@ func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product model.ProductEnt
 		fmt.Println(err)
 		return model.ProductEntity{}, err
 	}
-	
+
 	// Supabase buggy when using RETURNING
 	// query := `
 	// 	WITH category_lookup AS (
@@ -105,14 +105,14 @@ func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product model.ProductEnt
 	// 	) VALUES (
 	// 		$1, $2, $3, $4, 0, 'IDR', (SELECT id FROM category_lookup), $6, $7
 	// 	)
-	// 	RETURNING 
+	// 	RETURNING
 	// 		id, version, created_at, created_by, updated_at, updated_by,
 	// 		name, stock, price_amount, category_id
 	// `
 	// err := r.connPool.QueryRow(
-	// 	context.Background(), 
-	// 	query, 
-	// 	product.ID, product.Name, product.Stocks, product.Price, product.CategoryName, 
+	// 	context.Background(),
+	// 	query,
+	// 	product.ID, product.Name, product.Stocks, product.Price, product.CategoryName,
 	// 	product.CreatedBy, product.UpdatedBy,
 	// ).Scan(
 	// 	&insertedProduct.ID, &insertedProduct.Version, &insertedProduct.CreatedAt, &insertedProduct.CreatedBy, &insertedProduct.UpdatedAt, &insertedProduct.UpdatedBy,
@@ -124,9 +124,9 @@ func (r *ProductRepositoryPostgreSQLImpl) InsertProduct(product model.ProductEnt
 		fmt.Println(err)
 		return model.ProductEntity{}, err
 	}
-	
-	insertedProduct.CategoryName = product.CategoryName 
-	
+
+	insertedProduct.CategoryName = product.CategoryName
+
 	return insertedProduct, nil
 }
 
@@ -155,21 +155,21 @@ func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product m
 	// 	WITH category_lookup AS (
 	// 		SELECT id FROM core.category WHERE lower(name) = lower($4) AND deleted_at IS NULL
 	// 	)
-	// 	UPDATE core.product 
-	// 	SET 
-	// 		name = $1, 
+	// 	UPDATE core.product
+	// 	SET
+	// 		name = $1,
 	// 		stock = $2,
 	// 		price_amount = $3,
 	// 		category_id = (SELECT id FROM category_lookup),
 	// 		updated_by = $5
 	// 	WHERE id = $6 AND version = $7 AND deleted_at IS NULL
-	// 	RETURNING 
+	// 	RETURNING
 	// 		id, version, created_at, created_by, updated_at, updated_by, deleted_at,
 	// 		name, stock, price_amount, category_id
 	// `
-	
+
 	// err := r.connPool.QueryRow(
-	// 	context.Background(), 
+	// 	context.Background(),
 	// 	query,
 	// 	product.Name, product.Stocks, product.Price, product.CategoryName,
 	// 	product.UpdatedBy, id, product.Version,
@@ -177,7 +177,7 @@ func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product m
 	// 	&updatedProduct.ID, &updatedProduct.Version, &updatedProduct.CreatedAt, &updatedProduct.CreatedBy, &updatedProduct.UpdatedAt, &updatedProduct.UpdatedBy, &updatedProduct.DeletedAt,
 	// 	&updatedProduct.Name, &updatedProduct.Stocks, &updatedProduct.Price, &updatedProduct.CategoryID,
 	// )
-	
+
 	updatedProduct, err := r.FindProductByID(id)
 	if err != nil {
 		fmt.Println(err)
@@ -185,6 +185,50 @@ func (r *ProductRepositoryPostgreSQLImpl) UpdateProductByID(id string, product m
 	}
 	updatedProduct.CategoryName = product.CategoryName
 	return updatedProduct, nil
+}
+
+func (r *ProductRepositoryPostgreSQLImpl) FindProductsByNameAndActiveStatus(name string, activeStatus *bool) ([]model.ProductEntity, error) {
+	var products []model.ProductEntity
+	query := `
+		SELECT 
+			p.id, p.created_at, p.created_by, p.updated_at, p.updated_by,
+			p.name, p.stock, p.price_amount, p.category_id,
+			COALESCE(c.name, '') as category_name
+		FROM core.product p
+		LEFT JOIN core.category c ON p.category_id = c.id AND c.deleted_at IS NULL
+		WHERE (p.name_tsvector @@ plainto_tsquery('english', $1) 
+		   OR p.name_tsvector @@ to_tsquery('english', regexp_replace(trim($1), '\s+', ' & ', 'g') || ':*'))
+	`
+
+	if activeStatus != nil {
+		if *activeStatus {
+			query += " AND p.deleted_at IS NULL"
+		} else {
+			query += " AND p.deleted_at IS NOT NULL"
+		}
+	}
+
+	rows, err := r.connPool.Query(context.Background(), query, name)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var product model.ProductEntity
+		if err := rows.Scan(
+			&product.ID, &product.CreatedAt, &product.CreatedBy, &product.UpdatedAt, &product.UpdatedBy,
+			&product.Name, &product.Stocks, &product.Price, &product.CategoryID,
+			&product.CategoryName,
+		); err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+		products = append(products, product)
+	}
+
+	return products, nil
 }
 
 func (r *ProductRepositoryPostgreSQLImpl) DeleteProductByID(id string) error {

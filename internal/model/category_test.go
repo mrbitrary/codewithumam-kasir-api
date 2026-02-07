@@ -12,7 +12,7 @@ import (
 func TestCategoryEntity_ToModel(t *testing.T) {
 	now := time.Now()
 	id := uuid.New()
-	
+
 	entity := &CategoryEntity{
 		ID:          id,
 		Name:        "Electronics",
@@ -39,7 +39,7 @@ func TestCategoryEntity_ToModel_WithDeletedAt(t *testing.T) {
 	now := time.Now()
 	deletedAt := now.Add(time.Hour)
 	id := uuid.New()
-	
+
 	entity := &CategoryEntity{
 		ID:          id,
 		Name:        "Archived",
