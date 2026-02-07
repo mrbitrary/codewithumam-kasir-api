@@ -19,7 +19,7 @@ func TestProductEntity_ToModel(t *testing.T) {
 		Name:         "Laptop",
 		Price:        150000,
 		Stocks:       10,
-		CategoryID:   categoryID,
+		CategoryID:   &categoryID,
 		CategoryName: "Electronics",
 		CreatedAt:    now,
 		UpdatedAt:    now,

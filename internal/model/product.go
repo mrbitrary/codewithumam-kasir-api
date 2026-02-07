@@ -20,7 +20,7 @@ type ProductEntity struct {
 	Name         string
 	Price        int64
 	Stocks       int
-	CategoryID   uuid.UUID
+	CategoryID   *uuid.UUID
 	CategoryName string // JOIN from category table by category_id
 }
 

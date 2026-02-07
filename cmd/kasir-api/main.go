@@ -96,6 +96,21 @@ func main() {
 	mux.HandleFunc("PUT /api/products/{id}", productHandler.UpdateProduct)
 	mux.HandleFunc("DELETE /api/products/{id}", productHandler.DeleteProduct)
 
+	transactionRepository := pgrepository.NewTransactionRepository(db)
+	transactionService := service.NewTransactionService(transactionRepository, productRepository)
+	transactionHandler := handler.NewTransactionHandler(transactionService)
+	mux.HandleFunc("POST /api/transactions", transactionHandler.CreateTransaction)
+	mux.HandleFunc("GET /api/reports", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/today", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/yesterday", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/last-week", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/last-month", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/week-to-date", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/month-to-date", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/year-to-date", transactionHandler.FetchReport)
+	mux.HandleFunc("GET /api/reports/popular-categories", transactionHandler.FetchPopularCategory)
+	mux.HandleFunc("GET /api/reports/popular-products", transactionHandler.FetchPopularProduct)
+
 	fmt.Println("Server listening on :8080")
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", config.Port), mux); err != nil {
 		panic(err)

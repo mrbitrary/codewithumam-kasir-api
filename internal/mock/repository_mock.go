@@ -1,6 +1,8 @@
 package mock
 
 import (
+	"time"
+
 	"codewithumam-kasir-api/internal/model"
 
 	"github.com/stretchr/testify/mock"
@@ -83,4 +85,29 @@ func (m *MockProductRepository) UpdateProductByID(id string, product model.Produ
 func (m *MockProductRepository) DeleteProductByID(id string) error {
 	args := m.Called(id)
 	return args.Error(0)
+}
+
+// MockTransactionRepository is a mock implementation of TransactionRepository
+type MockTransactionRepository struct {
+	mock.Mock
+}
+
+func (m *MockTransactionRepository) CreateTransaction(tx model.TransactionEntity, details []model.TransactionDetailEntity) (model.TransactionEntity, error) {
+	args := m.Called(tx, details)
+	return args.Get(0).(model.TransactionEntity), args.Error(1)
+}
+
+func (m *MockTransactionRepository) GetReportStats(startDate, endDate time.Time) (model.ReportResponse, error) {
+	args := m.Called(startDate, endDate)
+	return args.Get(0).(model.ReportResponse), args.Error(1)
+}
+
+func (m *MockTransactionRepository) GetMostPopularCategory(startDate, endDate time.Time) (model.PopularCategory, error) {
+	args := m.Called(startDate, endDate)
+	return args.Get(0).(model.PopularCategory), args.Error(1)
+}
+
+func (m *MockTransactionRepository) GetMostPopularProduct(startDate, endDate time.Time) (model.PopularItem, error) {
+	args := m.Called(startDate, endDate)
+	return args.Get(0).(model.PopularItem), args.Error(1)
 }

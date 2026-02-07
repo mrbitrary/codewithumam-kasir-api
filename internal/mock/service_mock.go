@@ -79,3 +79,28 @@ func (m *MockProductService) DeleteProductByID(id string) error {
 	args := m.Called(id)
 	return args.Error(0)
 }
+
+// MockTransactionService is a mock implementation of TransactionService
+type MockTransactionService struct {
+	mock.Mock
+}
+
+func (m *MockTransactionService) CreateTransaction(req model.CreateTransactionRequest) (model.Transaction, error) {
+	args := m.Called(req)
+	return args.Get(0).(model.Transaction), args.Error(1)
+}
+
+func (m *MockTransactionService) FetchReport(startDateStr, endDateStr, period string) (model.ReportResponse, error) {
+	args := m.Called(startDateStr, endDateStr, period)
+	return args.Get(0).(model.ReportResponse), args.Error(1)
+}
+
+func (m *MockTransactionService) FetchMostPopularCategory(startDateStr, endDateStr string) (model.PopularCategory, error) {
+	args := m.Called(startDateStr, endDateStr)
+	return args.Get(0).(model.PopularCategory), args.Error(1)
+}
+
+func (m *MockTransactionService) FetchMostPopularProduct(startDateStr, endDateStr string) (model.PopularItem, error) {
+	args := m.Called(startDateStr, endDateStr)
+	return args.Get(0).(model.PopularItem), args.Error(1)
+}
