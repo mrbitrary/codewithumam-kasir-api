@@ -11,11 +11,11 @@ build:
 	GCO_ENABLED=0 go build -ldflags="-w -s" -o $(BUILD_DIR)/$(BINARY_NAME) $(CMD_PATH)
 
 test:
-	go test -v ./...
+	go test -v $$(go list ./... | grep -v /mock)
 
 coverage:
-	go test -coverprofile=coverage.txt ./...
-	go tool cover -func=coverage.txt
+	go test -coverprofile=coverage.txt $$(go list ./... | grep -v /mock)
+	go tool cover -func=coverage.txt | grep -v ".go:0:" | grep -v "_mock.go"
 
 clean:
 	rm -rf $(BUILD_DIR) coverage.txt

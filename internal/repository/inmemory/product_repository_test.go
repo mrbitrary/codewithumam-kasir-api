@@ -20,12 +20,13 @@ func TestInMemoryProductRepository_FindProducts(t *testing.T) {
 	assert.Empty(t, products)
 
 	// Add some products
+	catID1 := uuid.New()
 	prod1 := model.ProductEntity{
 		ID:           uuid.New(),
 		Name:         "Laptop",
 		Price:        1000,
 		Stocks:       5,
-		CategoryID:   uuid.New(),
+		CategoryID:   &catID1,
 		CategoryName: "Electronics",
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -43,12 +44,13 @@ func TestInMemoryProductRepository_FindProductByID(t *testing.T) {
 	repo := NewProductRepository()
 
 	id := uuid.New()
+	catID2 := uuid.New()
 	prod := model.ProductEntity{
 		ID:           id,
 		Name:         "Mouse",
 		Price:        25,
 		Stocks:       100,
-		CategoryID:   uuid.New(),
+		CategoryID:   &catID2,
 		CategoryName: "Accessories",
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -70,12 +72,13 @@ func TestInMemoryProductRepository_FindProductByID(t *testing.T) {
 func TestInMemoryProductRepository_InsertProduct(t *testing.T) {
 	repo := NewProductRepository()
 
+	catID3 := uuid.New()
 	prod := model.ProductEntity{
 		ID:           uuid.New(),
 		Name:         "Keyboard",
 		Price:        75,
 		Stocks:       50,
-		CategoryID:   uuid.New(),
+		CategoryID:   &catID3,
 		CategoryName: "Accessories",
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -101,7 +104,7 @@ func TestInMemoryProductRepository_UpdateProductByID(t *testing.T) {
 		Name:         "Original Product",
 		Price:        100,
 		Stocks:       10,
-		CategoryID:   categoryID,
+		CategoryID:   &categoryID,
 		CategoryName: "Original Category",
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -114,7 +117,7 @@ func TestInMemoryProductRepository_UpdateProductByID(t *testing.T) {
 		Name:         "Updated Product",
 		Price:        150,
 		Stocks:       20,
-		CategoryID:   categoryID,
+		CategoryID:   &categoryID,
 		CategoryName: "Updated Category",
 		UpdatedAt:    time.Now(),
 	}
@@ -139,12 +142,13 @@ func TestInMemoryProductRepository_DeleteProductByID(t *testing.T) {
 	repo := NewProductRepository()
 
 	id := uuid.New()
+	catID4 := uuid.New()
 	prod := model.ProductEntity{
 		ID:           id,
 		Name:         "ToDelete",
 		Price:        50,
 		Stocks:       5,
-		CategoryID:   uuid.New(),
+		CategoryID:   &catID4,
 		CategoryName: "Test",
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -186,12 +190,13 @@ func TestInMemoryProductRepository_MultipleProducts(t *testing.T) {
 
 	// Insert multiple products
 	for i := 0; i < 5; i++ {
+		catID5 := uuid.New()
 		prod := model.ProductEntity{
 			ID:           uuid.New(),
 			Name:         "Product " + string(rune('A'+i)),
 			Price:        int64((i + 1) * 100),
 			Stocks:       (i + 1) * 10,
-			CategoryID:   uuid.New(),
+			CategoryID:   &catID5,
 			CategoryName: "Category",
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
