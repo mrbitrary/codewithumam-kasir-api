@@ -4,7 +4,7 @@ import (
 	"codewithumam-kasir-api/internal/model"
 	"codewithumam-kasir-api/internal/repository"
 
-	"fmt"
+	"errors"
 	"github.com/google/uuid"
 	"strings"
 )
@@ -28,14 +28,14 @@ func (r *ProductRepositoryInMemoryImpl) FindProducts() ([]model.ProductEntity, e
 func (r *ProductRepositoryInMemoryImpl) FindProductByID(id string) (model.ProductEntity, error) {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
+		return model.ProductEntity{}, errors.New(errProductNotFound)
 	}
 	for _, p := range r.products {
 		if p.ID == parsedID {
 			return p, nil
 		}
 	}
-	return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
+	return model.ProductEntity{}, errors.New(errProductNotFound)
 }
 
 func (r *ProductRepositoryInMemoryImpl) FindProductsByNameAndActiveStatus(name string, activeStatus *bool) ([]model.ProductEntity, error) {
@@ -64,7 +64,7 @@ func (r *ProductRepositoryInMemoryImpl) InsertProduct(product model.ProductEntit
 func (r *ProductRepositoryInMemoryImpl) UpdateProductByID(id string, product model.ProductEntity) (model.ProductEntity, error) {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
+		return model.ProductEntity{}, errors.New(errProductNotFound)
 	}
 	for i, p := range r.products {
 		if p.ID == parsedID {
@@ -73,13 +73,13 @@ func (r *ProductRepositoryInMemoryImpl) UpdateProductByID(id string, product mod
 			return product, nil
 		}
 	}
-	return model.ProductEntity{}, fmt.Errorf(errProductNotFound)
+	return model.ProductEntity{}, errors.New(errProductNotFound)
 }
 
 func (r *ProductRepositoryInMemoryImpl) DeleteProductByID(id string) error {
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		return fmt.Errorf(errProductNotFound)
+		return errors.New(errProductNotFound)
 	}
 	for i, p := range r.products {
 		if p.ID == parsedID {
@@ -87,5 +87,5 @@ func (r *ProductRepositoryInMemoryImpl) DeleteProductByID(id string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf(errProductNotFound)
+	return errors.New(errProductNotFound)
 }
